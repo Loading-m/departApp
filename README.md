@@ -1,6 +1,6 @@
 # 仿火车票APP(vue vue-router vuex+模块化 jsx)
 
-## 感兴趣的小伙伴可以学习下  
+## 感兴趣的小伙伴可以学习下     vue学习练习项目 新手 
 
 ## 在线预览：https://dreams-d.github.io/departApp/ticket/#/index
 ## Project setup
