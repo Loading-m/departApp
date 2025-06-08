@@ -52,7 +52,7 @@ let index = {
         return;
       }
       const cache = JSON.parse(localStorage.getItem('city_data_cache') || '{}');
-      if (Date.now() < cache.expires) {
+      if (Date.now() <= cache.expires) {
         dispatch('set_city_data', cache.data);
         return;
       }
@@ -65,7 +65,7 @@ let index = {
           await dispatch('set_city_data', result.data);
           localStorage.setItem(
             'city_data_cache', JSON.stringify({
-              expires: Date.now() + 60 * 1000,
+              expires: Date.now() + 60,
               data: result.data
             })
           );
@@ -120,7 +120,7 @@ let index = {
     },
     show_city_selector({dispatch, commit, state}, currentSelectingLeftCity) {
       dispatch('set_is_city_selector_visible', true);
-      dispatch('set_current_selecting_left_city', currentSelectingLeftCity,);
+      dispatch('set_current_selecting_left_city', currentSelectingLeftCity);
     }
   },
 };

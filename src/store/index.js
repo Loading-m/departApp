@@ -11,7 +11,7 @@ import createPersistedState from "vuex-persistedstate";
 Vue.use(Vuex);
 const persisted = createPersistedState({
   storage: window.sessionStorage,
-  paths: ['index.froms', 'index.to', 'index.highSpeed', 'index.departDate', 'query.froms', 'query.to', 'query.departDate', 'query.highSpeed', 'query.trainList', 'query.onlyTickets', 'ticket.departDate', 'ticket.departStation', 'ticket.arriveStation', 'ticket.trainNumber'],
+  paths: ['index.froms', 'index.to', 'index.highSpeed', 'index.departDate', 'query.froms', 'query.to', 'query.departDate', 'query.highSpeed', 'query.trainList', 'query.onlyTickets', 'ticket.departDate', 'ticket.departStation', 'ticket.arriveStation'],
 });
 const debug = process.env.NODE_ENV !== 'production';
 export default new Vuex.Store({
