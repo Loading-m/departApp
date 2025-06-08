@@ -1,6 +1,7 @@
 import { h0 } from "@/utils/fp";
 import { ORDER_DEPART, ORDER_DURATION } from '@/views/query/constant';
 import Vue from 'vue';
+import { searchTrains, trainTypes, ticketTypes } from '@/utils/mockData';
 import {
   FROMS,
   TO,
@@ -192,6 +193,34 @@ let query = {
     async action_prev_date({dispatch, commit, state}) {
       await commit(DEPART_DATE, h0(state.departDate) - 86400 * 1000);
       dispatch('index/set_depart_date', state.departDate, {root: true});
+    },
+    async action_search_trains({dispatch, commit, state}) {
+      try {
+        const params = {
+          froms: state.froms,
+          to: state.to,
+          departDate: state.departDate,
+          highSpeed: state.highSpeed,
+          onlyTickets: state.onlyTickets,
+          orderType: state.orderType,
+          checkedTicketTypes: state.checkedTicketTypes,
+          checkedTrainTypes: state.checkedTrainTypes,
+          departTimeStart: state.departTimeStart,
+          departTimeEnd: state.departTimeEnd,
+          arriveTimeStart: state.arriveTimeStart,
+          arriveTimeEnd: state.arriveTimeEnd
+        };
+        
+        const result = await searchTrains(params);
+        if (result.success) {
+          commit(TRAIN_LIST, result.data);
+          // 设置默认的票务类型和车次类型
+          commit(TICKET_TYPES, ticketTypes);
+          commit(TRAIN_TYPES, trainTypes);
+        }
+      } catch (error) {
+        console.error('搜索车次失败:', error);
+      }
     },
   },
 };

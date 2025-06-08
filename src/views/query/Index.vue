@@ -121,29 +121,8 @@ export default {
       if (!val.searchParsed) {
         return;
       }
-      const url = new URI('/rest/query').setSearch('from', this.froms).setSearch('to', this.to).setSearch('date', dayjs(this.departDate).format('YYYY-MM-DD')).setSearch('highSpeed', this.highSpeed).setSearch('orderType', this.orderType)
-        .setSearch('onlyTickets', this.onlyTickets)
-        .setSearch('checkedTicketTypes', Object.keys(this.checkedTicketTypes).join())
-        .setSearch('checkedTrainTypes', Object.keys(this.checkedTrainTypes).join())
-        .setSearch('departTimeStart', this.departTimeStart)
-        .setSearch('departTimeEnd', this.departTimeEnd)
-        .setSearch('arriveTimeStart', this.arriveTimeStart).setSearch('arriveTimeEnd', this.arriveTimeEnd).toString();
-      fetch(url).then(res => res.json().then(result => {
-        const {
-          dataMap: {
-            directTrainInfo: {
-              trains,
-              filter: {
-                ticketType,
-                trainType,
-              }
-            }
-          }
-        } = result;
-        this.action_train_list(trains);
-        this.action_ticket_types(ticketType);
-        this.action_train_types(trainType);
-      }));
+      // 使用mock数据搜索车次
+      this.action_search_trains();
     }
   },
   methods: {
@@ -167,7 +146,8 @@ export default {
       'action_toggle_is_filters_visible',
       'action_search_parsed',
       'action_next_date',
-      'action_prev_date'
+      'action_prev_date',
+      'action_search_trains'
     ]),
     onBack() {
       this.$router.go(-1);
