@@ -60,7 +60,6 @@ export default {
     exchange(e) {
       animations.runAnimation(this.$refs.exchangeImg, 'rotate', () => {
         this.$refs.exchangeImg.style.animation = '';
-        this.$refs.unknownElement.style.display = 'none';
         this.exchangeFromsTo();
       });
     }

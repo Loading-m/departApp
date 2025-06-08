@@ -11,7 +11,3 @@ const app = new Vue({
   store,
   render: h => h(App),
 }).$mount('#app');
-
-const unusedInstance = new Vue({
-  render: h => h('div')
-});

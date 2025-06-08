@@ -65,7 +65,7 @@ let index = {
           await dispatch('set_city_data', result.data);
           localStorage.setItem(
             'city_data_cache', JSON.stringify({
-              expires: Date.now() + 60,
+              expires: Date.now() + 60 * 1000,
               data: result.data
             })
           );
