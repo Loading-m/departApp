@@ -15,6 +15,7 @@ import {
   SEARCH_PARSED,
   PASSENGER_ID_SEED
 } from './mutation-types';
+import { mockTrainList, submitOrder } from '@/utils/mockData';
 
 let order = {
   namespaced: true,
@@ -306,23 +307,57 @@ let order = {
         }
       ]);
     },
-    ACTION_FETCH_INITIAL({dispatch, commit, state}, url) {
-      fetch(url).then(res => {
-        res.json().then(data => {
-          const {
-            departTimeStr,
-            arriveTimeStr,
-            arriveDate,
-            price,
-            durationStr
-          } = data;
-          dispatch('ACTION_SET_DEPART_TIME_STR', departTimeStr);
-          dispatch('ACTION_SET_ARRIVE_TIME_STR', arriveTimeStr);
+    async ACTION_FETCH_INITIAL({dispatch, commit, state}, url) {
+      try {
+        // 使用mock数据模拟订单详情
+        const train = mockTrainList.find(t => t.trainNumber === state.trainNumber);
+        if (train) {
+          const seatInfo = train.ticketsInfo[state.seatType];
+          const price = seatInfo ? parseInt(seatInfo.price) : 0;
+          
+          // 计算到达日期（这里简化处理，实际可能跨天）
+          const [departHour, departMinute] = train.departTime.split(':');
+          const [arriveHour, arriveMinute] = train.arriveTime.split(':');
+          
+          let arriveDate = state.departDate;
+          // 如果到达时间小于出发时间，说明第二天到达
+          if (parseInt(arriveHour) < parseInt(departHour)) {
+            arriveDate = state.departDate + 24 * 60 * 60 * 1000;
+          }
+          
+          dispatch('ACTION_SET_DEPART_TIME_STR', train.departTime);
+          dispatch('ACTION_SET_ARRIVE_TIME_STR', train.arriveTime);
           dispatch('ACTION_SET_ARRIVE_DATE', arriveDate);
           dispatch('ACTION_SET_PRICE', price);
-          dispatch('ACTION_SET_DURATION_STR', durationStr);
-        });
-      });
+          dispatch('ACTION_SET_DURATION_STR', train.duration);
+        }
+      } catch (error) {
+        console.error('获取订单初始数据失败:', error);
+      }
+    },
+    async ACTION_SUBMIT_ORDER({dispatch, commit, state}) {
+      try {
+        const orderData = {
+          trainNumber: state.trainNumber,
+          departDate: state.departDate,
+          departTime: state.departTimeStr,
+          arriveTime: state.arriveTimeStr,
+          departStation: state.departStation,
+          arriveStation: state.arriveStation,
+          seatType: state.seatType,
+          passengers: state.passengers,
+          price: state.price
+        };
+        
+        const result = await submitOrder(orderData);
+        if (result.success) {
+          console.log('订单提交成功:', result.data);
+          return result.data;
+        }
+      } catch (error) {
+        console.error('提交订单失败:', error);
+        throw error;
+      }
     }
   },
 };

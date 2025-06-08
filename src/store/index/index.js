@@ -1,3 +1,5 @@
+import { getCities } from '@/utils/mockData';
+
 let index = {
   namespaced: true,
   state: {
@@ -45,7 +47,7 @@ let index = {
     }
   },
   actions: {
-    fetch_city_data({dispatch, commit, state}) {
+    async fetch_city_data({dispatch, commit, state}) {
       if (state.isLoadingCityData) {
         return;
       }
@@ -55,20 +57,24 @@ let index = {
         return;
       }
       dispatch('set_is_loading_city_data', true);
-      fetch('/rest/cities?_' + Date.now()).then(res => {
-        res.json().then(async cityData => {
-          await dispatch('set_city_data', cityData);
+      
+      try {
+        // 使用mock数据
+        const result = await getCities();
+        if (result.success) {
+          await dispatch('set_city_data', result.data);
           localStorage.setItem(
             'city_data_cache', JSON.stringify({
               expires: Date.now() + 60 * 1000,
-              data: cityData
+              data: result.data
             })
           );
-          await dispatch('set_is_loading_city_data', false);
-        }).catch(() => {
-          dispatch('set_is_loading_city_data', false);
-        });
-      });
+        }
+      } catch (error) {
+        console.error('获取城市数据失败:', error);
+      } finally {
+        await dispatch('set_is_loading_city_data', false);
+      }
     },
     set_froms({commit}, froms) {
       commit('froms', froms);
